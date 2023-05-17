@@ -1,5 +1,7 @@
 import Foundation
 
+
+    //Criaçao de estrututra Tarefa com prorpiedade titulo, descriçao e concluida
 struct Tarefa: Codable {
     var titulo: String
     var descricao: String
@@ -7,10 +9,12 @@ struct Tarefa: Codable {
 }
 
 
-var listaDeTarefas = [Tarefa(titulo: "Comprar leite", descricao: "Ir ao supermercado e comprar leite.", concluida: false), Tarefa(titulo: "Fazer exercícios", descricao: "Fazer 30 minutos de exercícios aeróbicos.", concluida: true)]
+var listaDeTarefas = [Tarefa]()
 
 
+    // Criação do caminho para o arquivo onde os dados serão armazenados
 let caminhoParaArquivo = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("data.json")
+
 
 do {
     let dadosDoArquivo = try Data(contentsOf: caminhoParaArquivo)
@@ -22,23 +26,25 @@ do {
 }
 
 
-
 func listarTarefas() {
+    // Verifica se a lista de tarefas está vazia
     if listaDeTarefas.isEmpty {
+        // Se estiver vazia, exibe mensagem informando que não há tarefas
         print("Não há tarefas para mostrar.")
     } else {
+        // Se a lista não estiver vazia, percorre cada tarefa da lista
         for (indice, tarefa) in listaDeTarefas.enumerated() {
             let status = tarefa.concluida ? "concluída" : "pendente"
-            print("\(indice + 1). \(tarefa.titulo) (\(status))")
+            // Exibe as informações da tarefa, incluindo índice, título, descrição e status
+            print("\(indice + 1). \(tarefa.titulo) - \(tarefa.descricao) (\(status))")
         }
     }
 }
 
 
-
-func adicionarTarefa() {
+func adicionarTarefa() {  // Solicita que o usuário digite o título da tarefa a ser adicionada
     print("Digite o título da tarefa que deseja adicionar:")
-    guard let titulo = readLine(), !titulo.isEmpty else {
+    guard let titulo = readLine(), !titulo.isEmpty else {  // Lê a entrada do usuário e verifica se não está vazia
         print("Título inválido.")
         return
     }
@@ -61,7 +67,6 @@ func adicionarTarefa() {
     }
     print("Tarefa adicionada com sucesso!")
 }
-
 
 
 func removerTarefa() {
@@ -91,7 +96,6 @@ func removerTarefa() {
         print("Opção inválida.")
     }
 }
-
 
 
 func editarTarefa() {
@@ -136,7 +140,6 @@ func editarTarefa() {
 }
 
 
-
 func atualizarTarefa() {
     if listaDeTarefas.isEmpty {
         print("Não há tarefas para atualizar.")
@@ -147,26 +150,12 @@ func atualizarTarefa() {
     listarTarefas()
     if let indice = Int(readLine(strippingNewline: true) ?? ""), indice > 0, indice <= listaDeTarefas.count {
         var tarefa = listaDeTarefas[indice - 1]
-        print("Título atual: \(tarefa.titulo)")
-        print("Digite o novo título da tarefa:")
-        guard let novoTitulo = readLine(), !novoTitulo.isEmpty else {
-            print("Título inválido.")
-            return
-        }
-        print("Descrição atual: \(tarefa.descricao)")
-        print("Digite a nova descrição da tarefa:")
-        guard let novaDescricao = readLine(), !novaDescricao.isEmpty else {
-            print("Descrição inválida.")
-            return
-        }
         print("Status atual: \(tarefa.concluida ? "concluída" : "pendente")")
         print("Digite o novo status da tarefa (concluída ou pendente):")
         guard let novoStatus = readLine()?.lowercased(), (novoStatus == "concluída" || novoStatus == "pendente") else {
             print("Status inválido.")
             return
         }
-        tarefa.titulo = novoTitulo
-        tarefa.descricao = novaDescricao
         tarefa.concluida = (novoStatus == "concluída")
         listaDeTarefas[indice - 1] = tarefa
         do {
@@ -181,8 +170,8 @@ func atualizarTarefa() {
         print("Opção inválida.")
     }
 }
-
     
+
     func menu() {
         while true {
             print("----- Gerenciador de Tarefas -----")
